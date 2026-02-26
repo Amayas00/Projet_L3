@@ -17,7 +17,11 @@ public class Bomb {
         return System.currentTimeMillis() >= explosionTimestamp;
     }
 
+    public long getRemainingMs() {
+        return Math.max(0, explosionTimestamp - System.currentTimeMillis());
+    }
     public int getX() { return x; }
     public int getY() { return y; }
     public int getRange() { return range; }
+    public Player getOwner() { return owner; }
 }
