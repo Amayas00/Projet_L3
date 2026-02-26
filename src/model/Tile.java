@@ -2,7 +2,7 @@ package src.model;
 
 public class Tile {
     private TileType type;
-    private Item bonus; 
+    private ItemType bonus; 
 
     public Tile(TileType type) {
         this.type = type;

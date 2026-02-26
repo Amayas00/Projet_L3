@@ -19,7 +19,6 @@ public class BombermanModel {
         
         generateLevel();
         
-        // Joueur 1 en haut à gauche, Joueur 2 en bas à droite [cite: 4]
         players.add(new Player(1, 1, 1));
         players.add(new Player(2, width - 2, height - 2));
     }
