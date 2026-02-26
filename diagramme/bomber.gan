@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="bomberman" company="" webLink="http://" view-date="2026-01-18" view-index="0" gantt-divider-location="351" resource-divider-location="300" version="3.3.3322" locale="en_US">
+<?xml version="1.0" encoding="UTF-8"?><project name="bomberman" company="" webLink="http://" view-date="2026-02-01" view-index="0" gantt-divider-location="351" resource-divider-location="300" version="3.3.3322" locale="en_US">
     <description/>
     <view zooming-state="default:4" id="gantt-chart">
         <field id="tpd3" name="Name" width="200" order="0"/>
@@ -45,22 +45,20 @@
         <task id="2" uid="fa4e027a0f8a418dac64906f6494c88b" name="Diagramme uml" meeting="false" start="2026-01-30" duration="3" complete="0" expand="true">
             <depend id="3" type="2" difference="0" hardness="Strong"/>
         </task>
-        <task id="3" uid="429e854eee5d489388343467f346be17" name="setup projet + MVC" meeting="false" start="2026-02-02" duration="2" complete="0" expand="true">
+        <task id="3" uid="429e854eee5d489388343467f346be17" name="Développement Backend - Le Modèle" meeting="false" start="2026-02-02" duration="6" complete="0" expand="true">
             <depend id="4" type="2" difference="0" hardness="Strong"/>
+            <task id="13" uid="988e2f90f4474d3f83f1cbddaafca3c4" name="Développement de la logique des joueurs (positions, capacités)" meeting="false" start="2026-02-02" duration="5" complete="0" expand="true"/>
+            <task id="12" uid="826ba3ab35a9463595e9694d927e60ec" name="Implémentation de la grille de jeu (blocs destructibles et indestructibles)" meeting="false" start="2026-02-03" duration="5" complete="0" expand="true"/>
         </task>
-        <task id="4" uid="74c85bca0b124ff2b18403ba29216ba7" name="Carte + blocks" meeting="false" start="2026-02-04" duration="8" complete="0" expand="true">
-            <depend id="5" type="2" difference="0" hardness="Strong"/>
+        <task id="4" uid="74c85bca0b124ff2b18403ba29216ba7" name="Frontend (La Vue)" meeting="false" start="2026-02-25" duration="4" complete="0" expand="true">
+            <task id="14" uid="fa241f5ed0474ba798a9f6d8d14ea218" name="Création de la fenêtre (Java Swing)" meeting="false" start="2026-02-25" duration="2" complete="0" expand="true"/>
+            <task id="17" uid="46eabadf90d743fa8158b3d77b87be56" name="Rendu graphique de la carte" meeting="false" start="2026-02-25" duration="1" complete="0" expand="true"/>
+            <task id="18" uid="26f6412af5674f22982a76dd84ee9991" name="Affichage des joueurs et des bombes" meeting="false" start="2026-02-25" duration="4" complete="0" expand="true"/>
         </task>
-        <task id="5" uid="4e4391f4aea94a20b7127ce47b1063b0" name="Deplacement joueurs + collisions" meeting="false" start="2026-02-12" duration="7" complete="0" expand="true">
-            <depend id="6" type="2" difference="0" hardness="Strong"/>
-        </task>
-        <task id="6" uid="c42cebc38d0045bdafcb15d8b8325c18" name="Bombes + explosions" meeting="false" start="2026-02-19" duration="10" complete="0" expand="true">
+        <task id="6" uid="c42cebc38d0045bdafcb15d8b8325c18" name="Bombes + explosions" meeting="false" start="2026-03-08" duration="10" complete="0" expand="true">
             <depend id="7" type="2" difference="0" hardness="Strong"/>
         </task>
-        <task id="7" uid="153e3667b2c84ea38bed92f4029d2857" name="Bonus/Malus" meeting="false" start="2026-03-01" duration="7" complete="0" expand="true">
-            <depend id="8" type="2" difference="0" hardness="Strong"/>
-        </task>
-        <task id="8" uid="5252f269b2e4409da9274a3f5acb920a" name="interface graphique ( java fx )+ HUD" meeting="false" start="2026-03-08" duration="7" complete="0" expand="true"/>
+        <task id="7" uid="153e3667b2c84ea38bed92f4029d2857" name="Bonus/Malus" meeting="false" start="2026-03-18" duration="7" complete="0" expand="true"/>
         <task id="9" uid="ba3fde6599a0400b985c7c1ccce0cd86" name="Tests , debug , equilibrage" meeting="false" start="2026-04-01" duration="15" complete="0" expand="true"/>
         <task id="10" uid="2d8d26ab433547ea874e382bb126f0ce" name="Presentation" meeting="false" start="2026-04-22" duration="4" complete="0" expand="true"/>
     </tasks>
@@ -75,9 +73,16 @@
         <allocation task-id="2" resource-id="1" function="Default:0" responsible="true" load="100.0"/>
         <allocation task-id="0" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
         <allocation task-id="1" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="4" resource-id="2" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="14" resource-id="2" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="17" resource-id="2" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="18" resource-id="2" function="Default:0" responsible="true" load="100.0"/>
         <allocation task-id="0" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
         <allocation task-id="1" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
         <allocation task-id="2" resource-id="3" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="3" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="13" resource-id="3" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="12" resource-id="3" function="Default:0" responsible="true" load="100.0"/>
     </allocations>
     <vacations/>
     <previous/>
