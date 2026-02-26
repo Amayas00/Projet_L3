@@ -1,3 +1,5 @@
+package src.model;
+
 public class Player {
     private int id;
     private int x, y; 

@@ -1,3 +1,5 @@
+package src.model;
+
 public enum TileType {
     EMPTY,           
     WALL,               

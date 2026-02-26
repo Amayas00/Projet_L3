@@ -1,3 +1,5 @@
+package src.model;
+
 public enum Item {
     BONUS_SPEED,   
     BONUS_BOMB_MAX,  

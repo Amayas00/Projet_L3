@@ -1,4 +1,4 @@
-
+package src.model;
 public class Bomb {
     private int x, y;
     private int range;
