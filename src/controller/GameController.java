@@ -2,7 +2,6 @@ package src.controller;
 
 import src.model.BombermanModel;
 import src.model.GameSettings;
-import src.View.BombermanView;
 import src.View.GameView;
 
 import javax.swing.Timer;
