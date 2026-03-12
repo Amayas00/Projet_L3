@@ -1,21 +1,20 @@
-import javax.swing.SwingUtilities;
+import src.controller.GameController;
 import src.model.BombermanModel;
 import src.model.GameSettings;
-import src.View.BombermanView;
-import src.controller.BombermanController;
+import src.View.GameView;
+
+import javax.swing.SwingUtilities;
 
 public class Main {
     public static void main(String[] args) {
-        // Lancement propre de l'interface graphique Swing
         SwingUtilities.invokeLater(() -> {
-            // Paramètres (permet de modifier la taille de la carte) 
-            GameSettings settings = new GameSettings();
-            
-            // Instanciation de l'architecture MVC
-            BombermanModel model = new BombermanModel(settings.getMapWidth(), settings.getMapHeight());
-            BombermanView view = new BombermanView(model);
-            BombermanController controller = new BombermanController(model, view);
-            
+            GameSettings   settings = new GameSettings();
+            BombermanModel model    = new BombermanModel(
+                    settings.getMapWidth(),
+                    settings.getMapHeight(),
+                    settings);
+            GameView view = new GameView(model);
+            new GameController(model, view, settings);
             view.display();
         });
     }

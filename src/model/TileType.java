@@ -4,6 +4,7 @@ public enum TileType {
     EMPTY,           
     WALL,               
     DESTRUCTIBLE_BLOCK,
-    BOMB,              
+    BOMB,   
+    ITEM,           
     EXPLOSION          
 }
