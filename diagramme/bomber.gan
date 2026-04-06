@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="Bomber" company="" webLink="http://" view-date="2026-02-22" view-index="0" gantt-divider-location="351" resource-divider-location="300" version="3.3.3322" locale="en_US">
+<?xml version="1.0" encoding="UTF-8"?><project name="Bomber" company="" webLink="http://" view-date="2026-01-18" view-index="0" gantt-divider-location="300" resource-divider-location="300" version="3.3.3322" locale="en_US">
     <description/>
-    <view zooming-state="default:4" id="gantt-chart">
-        <field id="tpd3" name="Name" width="200" order="0"/>
-        <field id="tpd4" name="Begin date" width="75" order="1"/>
-        <field id="tpd5" name="End date" width="75" order="2"/>
+    <view zooming-state="default:5" id="gantt-chart">
+        <field id="tpd3" name="Name" width="170" order="0"/>
+        <field id="tpd4" name="Begin date" width="64" order="1"/>
+        <field id="tpd5" name="End date" width="65" order="2"/>
         <field id="tpd15" name="Notes" width="20" order="3"/>
         <option id="filter.completedTasks" value="false"/>
         <option id="filter.dueTodayTasks" value="false"/>
@@ -44,23 +44,24 @@
             <task id="2" uid="c2a6f85e6d5644cd9c0f5bea11a9aa66" name="regles du jeu/langage/framework" meeting="false" start="2026-01-21" duration="1" complete="100" expand="true"/>
             <task id="3" uid="09d137555dfa42578628b5146b383783" name="diagramme uml" meeting="false" start="2026-02-04" duration="1" complete="100" expand="false"/>
         </task>
-        <task id="4" uid="cc6433ae42734894b7536a8e29c68e80" name="model" meeting="false" start="2026-02-19" duration="6" complete="87" expand="false">
-            <task id="5" uid="6810220835044f3bb311a30b070f0152" name="bomb" meeting="false" start="2026-02-19" duration="6" complete="0" expand="true"/>
-            <task id="6" uid="1a81864e78e6416fbbab6d2d2f735610" name="BombermanModel" meeting="false" start="2026-02-19" duration="6" complete="100" expand="true"/>
-            <task id="7" uid="133dfc3dbf7f4fcd9b5b59de5bbc0554" name="GameSettings" meeting="false" start="2026-02-19" duration="6" complete="100" expand="true"/>
-            <task id="9" uid="ea5e1e6d6ab44992990e0bf887b394b4" name="Item" meeting="false" start="2026-02-19" duration="6" complete="100" expand="true"/>
-            <task id="10" uid="f5c4d3f39f44493782215724314f980d" name="ItemType" color="#8cb6ce" meeting="false" start="2026-02-19" duration="6" complete="100" expand="true"/>
-            <task id="11" uid="cfed624e87564668a6243477959cadf3" name="Player" color="#8cb6ce" meeting="false" start="2026-02-19" duration="6" complete="100" expand="true"/>
-            <task id="12" uid="c05b04caf0f742ec96bf2f1202b8bf6f" name="Tile" color="#8cb6ce" meeting="false" start="2026-02-19" duration="6" complete="100" expand="true"/>
-            <task id="13" uid="b87e3fa410654550ba8eeae47c57721b" name="TileType" color="#8cb6ce" meeting="false" start="2026-02-19" duration="6" complete="100" expand="true"/>
+        <task id="4" uid="cc6433ae42734894b7536a8e29c68e80" name="model" meeting="false" start="2026-02-19" duration="40" complete="86" expand="true">
+            <task id="5" uid="6810220835044f3bb311a30b070f0152" name="bomb" meeting="false" start="2026-02-19" duration="30" complete="90" expand="true"/>
+            <task id="6" uid="1a81864e78e6416fbbab6d2d2f735610" name="BombermanModel" meeting="false" start="2026-02-19" duration="12" complete="100" expand="true"/>
+            <task id="7" uid="133dfc3dbf7f4fcd9b5b59de5bbc0554" name="GameSettings" meeting="false" start="2026-02-19" duration="19" complete="100" expand="true"/>
+            <task id="9" uid="ea5e1e6d6ab44992990e0bf887b394b4" name="Item" meeting="false" start="2026-02-19" duration="12" complete="100" expand="true"/>
+            <task id="10" uid="f5c4d3f39f44493782215724314f980d" name="ItemType" color="#8cb6ce" meeting="false" start="2026-02-19" duration="8" complete="100" expand="true"/>
+            <task id="11" uid="cfed624e87564668a6243477959cadf3" name="Player" color="#8cb6ce" meeting="false" start="2026-02-19" duration="40" complete="60" expand="true"/>
+            <task id="12" uid="c05b04caf0f742ec96bf2f1202b8bf6f" name="Tile" color="#8cb6ce" meeting="false" start="2026-02-19" duration="8" complete="100" expand="true"/>
+            <task id="13" uid="b87e3fa410654550ba8eeae47c57721b" name="TileType" color="#8cb6ce" meeting="false" start="2026-02-19" duration="10" complete="100" expand="true"/>
         </task>
-        <task id="14" uid="582a94db1bd24d8097b53b45f8286eae" name="la vue" meeting="false" start="2026-02-25" duration="22" complete="50" expand="true">
-            <task id="15" uid="3a7a121badcb4ba285360f6ea5e8402e" name="GameView" meeting="false" start="2026-02-25" duration="22" complete="50" expand="true"/>
-            <task id="16" uid="da8df0b079524a0baed564f32483c553" name="GamePanel" color="#8cb6ce" meeting="false" start="2026-02-25" duration="22" complete="50" expand="true"/>
+        <task id="14" uid="582a94db1bd24d8097b53b45f8286eae" name="la vue" meeting="false" start="2026-02-25" duration="35" complete="64" expand="true">
+            <task id="15" uid="3a7a121badcb4ba285360f6ea5e8402e" name="BombermanView" meeting="false" start="2026-02-25" duration="32" complete="70" expand="true"/>
+            <task id="16" uid="da8df0b079524a0baed564f32483c553" name="GamePanel" color="#8cb6ce" meeting="false" start="2026-02-25" duration="35" complete="60" expand="true"/>
         </task>
-        <task id="17" uid="d09aa188fe0e4bddaa0a009853323df7" name="les controlleurs" meeting="false" start="2026-02-25" duration="22" complete="50" expand="true">
-            <task id="19" uid="9aa7b30606a64c47b724da2d39c8bd20" name="GameController" color="#8cb6ce" meeting="false" start="2026-02-25" duration="22" complete="50" expand="true"/>
+        <task id="17" uid="d09aa188fe0e4bddaa0a009853323df7" name="les controlleurs" meeting="false" start="2026-02-25" duration="32" complete="75" expand="true">
+            <task id="19" uid="9aa7b30606a64c47b724da2d39c8bd20" name="GameController" color="#8cb6ce" meeting="false" start="2026-02-25" duration="32" complete="75" expand="true"/>
         </task>
+        <task id="22" uid="c39df351f1fc4f54a989b759f86f4d6a" name="Tests &amp; finitions" meeting="false" start="2026-05-01" duration="4" complete="0" expand="true"/>
     </tasks>
     <resources>
         <resource id="4" name="naima" function="Default:0" contacts="" phone=""/>
@@ -68,21 +69,17 @@
         <resource id="6" name="amayas" function="Default:0" contacts="" phone=""/>
     </resources>
     <allocations>
-        <allocation task-id="0" resource-id="4" function="Default:0" responsible="true" load="100.0"/>
         <allocation task-id="1" resource-id="4" function="Default:0" responsible="true" load="100.0"/>
         <allocation task-id="2" resource-id="4" function="Default:0" responsible="true" load="100.0"/>
         <allocation task-id="3" resource-id="4" function="Default:0" responsible="true" load="100.0"/>
-        <allocation task-id="8" resource-id="4" function="Default:0" responsible="true" load="100.0"/>
-        <allocation task-id="17" resource-id="4" function="Default:0" responsible="true" load="100.0"/>
         <allocation task-id="19" resource-id="4" function="Default:0" responsible="true" load="50.0"/>
         <allocation task-id="15" resource-id="4" function="Default:0" responsible="false" load="50.0"/>
-        <allocation task-id="14" resource-id="4" function="Default:0" responsible="false" load="100.0"/>
-        <allocation task-id="0" resource-id="5" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="22" resource-id="4" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="8" resource-id="4" function="Default:0" responsible="false" load="100.0"/>
         <allocation task-id="1" resource-id="5" function="Default:0" responsible="true" load="100.0"/>
         <allocation task-id="2" resource-id="5" function="Default:0" responsible="true" load="100.0"/>
         <allocation task-id="16" resource-id="5" function="Default:0" responsible="false" load="100.0"/>
-        <allocation task-id="14" resource-id="5" function="Default:0" responsible="true" load="100.0"/>
-        <allocation task-id="0" resource-id="6" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="22" resource-id="5" function="Default:0" responsible="false" load="100.0"/>
         <allocation task-id="1" resource-id="6" function="Default:0" responsible="true" load="100.0"/>
         <allocation task-id="2" resource-id="6" function="Default:0" responsible="true" load="100.0"/>
         <allocation task-id="5" resource-id="6" function="Default:0" responsible="true" load="100.0"/>
@@ -95,8 +92,8 @@
         <allocation task-id="13" resource-id="6" function="Default:0" responsible="true" load="100.0"/>
         <allocation task-id="15" resource-id="6" function="Default:0" responsible="false" load="50.0"/>
         <allocation task-id="16" resource-id="6" function="Default:0" responsible="false" load="50.0"/>
-        <allocation task-id="4" resource-id="6" function="Default:0" responsible="true" load="100.0"/>
-        <allocation task-id="14" resource-id="6" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="22" resource-id="6" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="8" resource-id="6" function="Default:0" responsible="true" load="100.0"/>
     </allocations>
     <vacations/>
     <previous/>
