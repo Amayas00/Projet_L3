@@ -8,7 +8,7 @@ public class BombermanView extends JFrame {
     private final GamePanel gamePanel;
 
     public BombermanView(BombermanModel model) {
-        this.setTitle("Bomberman - MVC");
+        this.setTitle("Bomberman - L3 MIAGE");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
 
@@ -17,10 +17,6 @@ public class BombermanView extends JFrame {
         this.pack();
         this.setLocationRelativeTo(null);
     }
-
-    public void updateModel(BombermanModel newModel) {
-        gamePanel.updateModel(newModel);
-        }
 
     public void refresh() {
         gamePanel.repaint();

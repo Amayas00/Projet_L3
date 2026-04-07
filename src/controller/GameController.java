@@ -12,8 +12,8 @@ import java.util.Set;
 public class GameController extends KeyAdapter {
     private BombermanModel model;
     private final BombermanView view;
-    private final GameSettings  settings;
-    private final Set<Integer>  pressedKeys = new HashSet<>();
+    private final GameSettings settings;
+    private final Set<Integer> pressedKeys = new HashSet<>();
     private final Timer gameLoop;
 
     public GameController(BombermanModel model, BombermanView view, GameSettings settings) {
@@ -27,7 +27,6 @@ public class GameController extends KeyAdapter {
         gameLoop.start();
     }
 
-
     @Override
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
@@ -36,8 +35,7 @@ public class GameController extends KeyAdapter {
         if (code == KeyEvent.VK_ENTER) model.placeBomb(1);
         if (code == KeyEvent.VK_SPACE) model.placeBomb(2);
 
-        if (code == KeyEvent.VK_R
-                && model.getPhase() == BombermanModel.GamePhase.GAME_OVER) {
+        if (code == KeyEvent.VK_R && model.getPhase() == BombermanModel.GamePhase.GAME_OVER) {
             restartGame();
         }
 
@@ -77,7 +75,6 @@ public class GameController extends KeyAdapter {
 
     private void restartGame() {
         model.resetGame();
-        view.updateModel(model);
         pressedKeys.clear();
         view.refresh();
         view.getGamePanel().requestFocusInWindow();
