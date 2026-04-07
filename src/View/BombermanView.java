@@ -1,23 +1,26 @@
- package src.View;
+package src.View;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import src.model.BombermanModel;
 
 public class BombermanView extends JFrame {
-    private GamePanel gamePanel;
+    private final GamePanel gamePanel;
 
     public BombermanView(BombermanModel model) {
-        this.setTitle("Bomberman - L3 MIAGE");
+        this.setTitle("Bomberman - MVC");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setResizable(false); 
+        this.setResizable(false);
 
         this.gamePanel = new GamePanel(model);
         this.add(gamePanel);
-
         this.pack();
-        this.setLocationRelativeTo(null); 
+        this.setLocationRelativeTo(null);
     }
+
+    public void updateModel(BombermanModel newModel) {
+        gamePanel.updateModel(newModel);
+        }
 
     public void refresh() {
         gamePanel.repaint();
@@ -26,11 +29,9 @@ public class BombermanView extends JFrame {
     public GamePanel getGamePanel() {
         return gamePanel;
     }
-    
+
     public void display() {
         this.setVisible(true);
-        SwingUtilities.invokeLater(() -> {
-            gamePanel.requestFocusInWindow();
-        });
+        SwingUtilities.invokeLater(gamePanel::requestFocusInWindow);
     }
 }
