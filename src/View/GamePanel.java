@@ -10,57 +10,30 @@ import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 import java.util.List;
 
-/**
- * Panel de rendu principal.
- *
- * NOUVEAUTÉS (v3) :
- * ─────────────────
- * 1. Panneaux de statistiques latéraux (gauche = J1, droite = J2) affichant
- *    en temps réel : vies (cœurs), vitesse, portée bombe, nb de bombes.
- *    Les valeurs sont lues directement sur le modèle Player à chaque repaint.
- *
- * 2. Le bouton "Rejouer" est dessiné en pur Swing (Graphics2D) sur l'écran
- *    de fin. GameController interroge isRestartClicked() après chaque clic
- *    pour déclencher model.resetGame() sans fermer la fenêtre.
- *
- * 3. Clignotement du joueur pendant l'invincibilité post-respawn.
- *
- * 4. Layout : [STAT_P1 | GRILLE | STAT_P2] — la grille reste centrée.
- *
- * CONNEXION STATS ↔ MODÈLE :
- *   drawStatPanel() lit directement p.getLives(), p.getSpeedLevel(),
- *   p.getBombRange(), p.getBombCapacity() à chaque appel de paintComponent().
- *   Aucun cache intermédiaire — les valeurs affichées sont toujours
- *   synchrones avec l'état interne du joueur.
- */
+
 public class GamePanel extends JPanel {
 
-    // ── Dimensions ──────────────────────────────────────────────────────────
     public  static final int TILE_SIZE   = 40;
-    private static final int STAT_WIDTH  = 140;  // largeur de chaque panneau latéral
-    private static final int BOTTOM_BAR  = 32;   // barre de touches en bas
+    private static final int STAT_WIDTH  = 140;
+    private static final int BOTTOM_BAR  = 32;  
 
-    // ── Couleurs ─────────────────────────────────────────────────────────────
-    private static final Color COLOR_WALL         = new Color(55,  55,  55);
+    private static final Color COLOR_WALL = new Color(55,  55,  55);
     private static final Color COLOR_DESTRUCTIBLE = new Color(160, 100, 45);
-    private static final Color COLOR_EMPTY        = new Color(34,  139, 34);
+    private static final Color COLOR_EMPTY = new Color(34,  139, 34);
     private static final Color COLOR_EXPLOSION    = new Color(255, 140, 0);
-    private static final Color COLOR_P1           = new Color(30,  100, 220);
-    private static final Color COLOR_P2           = new Color(200, 40,  40);
-    private static final Color COLOR_STAT_BG      = new Color(18,  18,  28);
+    private static final Color COLOR_P1 = new Color(30,  100, 220);
+    private static final Color COLOR_P2 = new Color(200, 40,  40);
+    private static final Color COLOR_STAT_BG = new Color(18,  18,  28);
     private static final Color COLOR_STAT_BORDER  = new Color(60,  60,  80);
     private static final Color COLOR_HEART_FULL   = new Color(220, 50,  50);
     private static final Color COLOR_HEART_EMPTY  = new Color(80,  30,  30);
-    private static final Color COLOR_BAR_BG       = new Color(40,  40,  60);
+    private static final Color COLOR_BAR_BG  = new Color(40,  40,  60);
 
-    // ── Restart button state ─────────────────────────────────────────────────
     private Rectangle restartButtonBounds = null;
     private boolean   restartClicked      = false;
 
-    // ── Modèle ───────────────────────────────────────────────────────────────
     private BombermanModel model;
 
-    // ════════════════════════════════════════════════════════════════════════
     public GamePanel(BombermanModel model) {
         this.model = model;
         this.setFocusable(true);
@@ -68,7 +41,6 @@ public class GamePanel extends JPanel {
         this.setBackground(Color.BLACK);
         updatePreferredSize();
 
-        // Détection clic sur le bouton Rejouer
         this.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
@@ -81,29 +53,23 @@ public class GamePanel extends JPanel {
         });
     }
 
-    /** Recalcule la taille préférée (appelé aussi après updateModel). */
     private void updatePreferredSize() {
         int w = STAT_WIDTH * 2 + model.getWidth()  * TILE_SIZE;
         int h = model.getHeight() * TILE_SIZE + BOTTOM_BAR;
         this.setPreferredSize(new Dimension(w, h));
     }
 
-    /** Permet à GameController de remplacer le modèle sans recréer le panel. */
     public void updateModel(BombermanModel newModel) {
         this.model = newModel;
         updatePreferredSize();
         repaint();
     }
 
-    /** Consommé par GameController pour déclencher le restart. */
     public boolean isRestartClicked() {
         if (restartClicked) { restartClicked = false; return true; }
         return false;
     }
 
-    // ════════════════════════════════════════════════════════════════════════
-    //  PEINTURE PRINCIPALE
-    // ════════════════════════════════════════════════════════════════════════
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -118,12 +84,10 @@ public class GamePanel extends JPanel {
         Player p1 = players.stream().filter(p -> p.getId() == 1).findFirst().orElse(null);
         Player p2 = players.stream().filter(p -> p.getId() == 2).findFirst().orElse(null);
 
-        // ── Panneaux de stats latéraux ────────────────────────────────────
         int gridH = model.getHeight() * TILE_SIZE;
         drawStatPanel(g2, p1, 0,                          gridH, true);
         drawStatPanel(g2, p2, STAT_WIDTH + model.getWidth() * TILE_SIZE, gridH, false);
 
-        // ── Grille (décalée de STAT_WIDTH vers la droite) ────────────────
         g2.translate(STAT_WIDTH, 0);
         drawGrid(g2);
         drawItems(g2);
@@ -131,63 +95,35 @@ public class GamePanel extends JPanel {
         drawPlayers(g2);
         g2.translate(-STAT_WIDTH, 0);
 
-        // ── Barre de touches en bas ───────────────────────────────────────
         drawBottomBar(g2);
 
-        // ── Écran fin de partie ───────────────────────────────────────────
         if (model.getPhase() == BombermanModel.GamePhase.GAME_OVER) {
             drawGameOver(g2);
         }
     }
 
-    // ════════════════════════════════════════════════════════════════════════
-    //  PANNEAU DE STATISTIQUES LATÉRAL
-    // ════════════════════════════════════════════════════════════════════════
 
-    /**
-     * Dessine le panneau de stats d'un joueur.
-     *
-     * Contenu :
-     *  ┌─────────────────┐
-     *  │  JOUEUR N       │  ← titre coloré
-     *  │  ♥ ♥ ♥          │  ← cœurs (pleins / vides)
-     *  │  Vitesse   ███  │  ← barre de progression 1-5
-     *  │  Portée    ███  │
-     *  │  Bombes    ███  │
-     *  │  [MORT]         │  ← affiché si !alive
-     *  └─────────────────┘
-     *
-     * CONNEXION AU MODÈLE :
-     * Chaque valeur est lue directement sur l'objet Player à chaque
-     * appel — il n'y a aucune copie intermédiaire. Dès qu'un bonus est
-     * appliqué via Player.applyItem(), le prochain repaint (toutes les
-     * ~30 ms) affiche la valeur mise à jour automatiquement.
-     */
     private void drawStatPanel(Graphics2D g, Player p, int panelX, int panelH, boolean isLeft) {
         if (p == null) return;
 
         Color playerColor = isLeft ? COLOR_P1 : COLOR_P2;
 
-        // Fond du panneau
         g.setColor(COLOR_STAT_BG);
         g.fillRect(panelX, 0, STAT_WIDTH, panelH);
         g.setColor(COLOR_STAT_BORDER);
         g.drawRect(panelX, 0, STAT_WIDTH - 1, panelH - 1);
 
-        // ── Titre ─────────────────────────────────────────────────────────
         g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 15));
         g.setColor(playerColor);
         String title = "JOUEUR " + p.getId();
         FontMetrics fm = g.getFontMetrics();
         g.drawString(title, panelX + (STAT_WIDTH - fm.stringWidth(title)) / 2, 28);
 
-        // Séparateur
         g.setColor(playerColor.darker());
         g.drawLine(panelX + 10, 34, panelX + STAT_WIDTH - 10, 34);
 
         int y = 60; // curseur vertical courant
 
-        // ── Vies (cœurs) ─────────────────────────────────────────────────
         g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 11));
         g.setColor(new Color(180, 180, 180));
         g.drawString("VIES", panelX + 12, y - 4);
@@ -207,19 +143,15 @@ public class GamePanel extends JPanel {
         g.setColor(COLOR_STAT_BORDER);
         g.drawLine(panelX + 10, y - 6, panelX + STAT_WIDTH - 10, y - 6);
 
-        // ── Vitesse ───────────────────────────────────────────────────────
         y = drawStatRow(g, panelX, y, "Vitesse",  p.getSpeedLevel(),  5, playerColor);
         y += 4;
 
-        // ── Portée ───────────────────────────────────────────────────────
         y = drawStatRow(g, panelX, y, "Portée",   p.getBombRange(),   9, playerColor);
         y += 4;
 
-        // ── Bombes max ────────────────────────────────────────────────────
         y = drawStatRow(g, panelX, y, "Bombes",   p.getBombCapacity(), 8, playerColor);
         y += 12;
 
-        // ── Bombes actives (petits indicateurs) ───────────────────────────
         int activeBombs = p.getActiveBombs();
         if (activeBombs > 0) {
             g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 10));
@@ -229,7 +161,6 @@ public class GamePanel extends JPanel {
             y += 16;
         }
 
-        // ── Statut MORT / INVINCIBLE ──────────────────────────────────────
         if (!p.isAlive()) {
             g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 14));
             g.setColor(new Color(200, 50, 50));
@@ -248,35 +179,25 @@ public class GamePanel extends JPanel {
         }
     }
 
-    /**
-     * Dessine une ligne de statistique avec label et barre de progression.
-     * Retourne la nouvelle position Y après le dessin.
-     *
-     * Exemple : "Vitesse  [████░░] 3/5"
-     */
     private int drawStatRow(Graphics2D g, int panelX, int y,
                              String label, int value, int maxValue, Color barColor) {
         int innerW = STAT_WIDTH - 20;
         int barH   = 8;
 
-        // Label
         g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 11));
         g.setColor(new Color(180, 180, 180));
         g.drawString(label, panelX + 12, y);
         y += 14;
 
-        // Fond barre
         g.setColor(COLOR_BAR_BG);
         g.fillRoundRect(panelX + 10, y, innerW, barH, 4, 4);
 
-        // Remplissage barre
         int filled = (int) Math.round((double) value / maxValue * innerW);
         if (filled > 0) {
             g.setColor(barColor);
             g.fillRoundRect(panelX + 10, y, filled, barH, 4, 4);
         }
 
-        // Valeur numérique à droite
         g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 10));
         g.setColor(Color.WHITE);
         String val = value + "/" + maxValue;
@@ -286,10 +207,7 @@ public class GamePanel extends JPanel {
         return y + barH + 6;
     }
 
-    /**
-     * Dessine un cœur stylisé (deux demi-cercles + un triangle).
-     * Utilisé pour représenter les vies restantes.
-     */
+
     private void drawHeart(Graphics2D g, int x, int y, int size, Color color) {
         g.setColor(color);
         // Deux cercles en haut
@@ -301,10 +219,6 @@ public class GamePanel extends JPanel {
         int[] ys = {y + size/3, y + size/3, y + size};
         g.fillPolygon(xs, ys, 3);
     }
-
-    // ════════════════════════════════════════════════════════════════════════
-    //  GRILLE
-    // ════════════════════════════════════════════════════════════════════════
 
     private void drawGrid(Graphics2D g) {
         TileType[][] grid = model.getGrid();
@@ -350,9 +264,6 @@ public class GamePanel extends JPanel {
         }
     }
 
-    // ════════════════════════════════════════════════════════════════════════
-    //  ITEMS
-    // ════════════════════════════════════════════════════════════════════════
 
     private void drawItems(Graphics2D g) {
         ItemType[][] items = model.getItems();
@@ -374,27 +285,24 @@ public class GamePanel extends JPanel {
 
     private Color  itemColor(ItemType t) {
         return switch (t) {
-            case BONUS_SPEED      -> new Color(100, 220, 255);
+            case BONUS_SPEED -> new Color(100, 220, 255);
             case BONUS_BOMB_COUNT -> new Color(255, 200, 50);
-            case BONUS_RANGE      -> new Color(255, 130, 50);
-            case MALUS_SLOW       -> new Color(180, 60, 180);
-            default               -> Color.WHITE;
+            case BONUS_RANGE -> new Color(255, 130, 50);
+            case MALUS_SLOW -> new Color(180, 60, 180);
+            default  -> Color.WHITE;
         };
     }
 
     private String itemLabel(ItemType t) {
         return switch (t) {
-            case BONUS_SPEED      -> "+V";
+            case BONUS_SPEED -> "+V";
             case BONUS_BOMB_COUNT -> "+B";
-            case BONUS_RANGE      -> "+F";
-            case MALUS_SLOW       -> "-V";
-            default               -> "?";
+            case BONUS_RANGE -> "+F";
+            case MALUS_SLOW -> "-V";
+            default  -> "?";
         };
     }
 
-    // ════════════════════════════════════════════════════════════════════════
-    //  BOMBES
-    // ════════════════════════════════════════════════════════════════════════
 
     private void drawBombs(Graphics2D g) {
         for (Bomb b : model.getBombs()) {
@@ -417,10 +325,6 @@ public class GamePanel extends JPanel {
                             py+TILE_SIZE/2+fm.getAscent()/3);
         }
     }
-
-    // ════════════════════════════════════════════════════════════════════════
-    //  JOUEURS (avec clignotement invincibilité)
-    // ════════════════════════════════════════════════════════════════════════
 
     private void drawPlayers(Graphics2D g) {
         for (Player p : model.getPlayers()) {
@@ -446,10 +350,6 @@ public class GamePanel extends JPanel {
         }
     }
 
-    // ════════════════════════════════════════════════════════════════════════
-    //  BARRE DU BAS (raccourcis clavier)
-    // ════════════════════════════════════════════════════════════════════════
-
     private void drawBottomBar(Graphics2D g) {
         int totalW = getWidth();
         int barY   = model.getHeight() * TILE_SIZE;
@@ -469,18 +369,7 @@ public class GamePanel extends JPanel {
         g.drawString(p2keys, totalW - fm.stringWidth(p2keys) - 10, barY + 21);
     }
 
-    // ════════════════════════════════════════════════════════════════════════
-    //  ÉCRAN DE FIN DE PARTIE
-    // ════════════════════════════════════════════════════════════════════════
 
-    /**
-     * Overlay de fin de partie avec bouton "Rejouer".
-     *
-     * Le bouton est un rectangle dessiné en Graphics2D.
-     * Sa position est mémorisée dans restartButtonBounds pour que le
-     * MouseListener puisse détecter les clics dessus.
-     * GameController lit isRestartClicked() à chaque tick pour agir.
-     */
     private void drawGameOver(Graphics2D g) {
         int totalW = getWidth(), totalH = getHeight();
 

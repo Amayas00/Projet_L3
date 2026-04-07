@@ -11,12 +11,12 @@ public class Player {
     private int lives = INITIAL_LIVES;
     private boolean alive = true;
 
-    private int bombCapacity = 1;
+    private int bombCapacity    = 1;
     private int activeBombCount = 0;
-    private int bombRange = 2;
+    private int bombRange       = 2;
 
     private long lastMoveTime = 0;
-    private int  moveDelay = 180;
+    private int  moveDelay    = 180;
     private static final int MIN_MOVE_DELAY = 60;
     private static final int MAX_MOVE_DELAY = 400;
 
@@ -50,10 +50,11 @@ public class Player {
     public void onBombExploded() { if (activeBombCount > 0) activeBombCount--; }
 
     public enum HitResult {
-        HIT_NONE, 
-        HIT_ALIVE, 
-        HIT_DEAD  
+        HIT_NONE,   // ignoré (invincible ou déjà mort)
+        HIT_ALIVE,  // touché, encore des vies → le modèle doit appeler respawn()
+        HIT_DEAD    // touché, plus de vies → fin de partie
     }
+
 
     public HitResult hit() {
         if (!alive || isInvincible()) return HitResult.HIT_NONE;
@@ -69,14 +70,14 @@ public class Player {
     }
 
     public void respawn() {
-        this.x = spawnX;
-        this.y = spawnY;
-        this.lastMoveTime = 0;
+        this.x               = spawnX;
+        this.y               = spawnY;
+        this.lastMoveTime    = 0;
         this.invincibleUntil = System.currentTimeMillis() + SPAWN_INVINCIBLE_MS;
     }
 
     public void reset() {
-        this.x = spawnX;
+        this.x  = spawnX;
         this.y = spawnY;
         this.lives = INITIAL_LIVES;
         this.alive = true;
@@ -84,35 +85,32 @@ public class Player {
         this.bombCapacity = 1;
         this.bombRange = 2;
         this.moveDelay = 180;
-        this.lastMoveTime    = 0;
+        this.lastMoveTime = 0;
         this.invincibleUntil = System.currentTimeMillis() + SPAWN_INVINCIBLE_MS;
     }
 
     public void applyItem(ItemType type) {
         switch (type) {
             case BONUS_SPEED -> moveDelay = Math.max(MIN_MOVE_DELAY, moveDelay - 30);
-            case MALUS_SLOW -> moveDelay = Math.min(MAX_MOVE_DELAY, moveDelay + 40);
+            case MALUS_SLOW -> moveDelay    = Math.min(MAX_MOVE_DELAY, moveDelay + 40);
             case BONUS_BOMB_COUNT -> bombCapacity = Math.min(bombCapacity + 1, 8);
-            case BONUS_RANGE -> bombRange = Math.min(bombRange    + 1, 9);
+            case BONUS_RANGE -> bombRange    = Math.min(bombRange    + 1, 9);
             case NONE -> {}
         }
     }
 
-
-    public int getId() { return id; }
+    public int  getId() { return id; }
     public int getX() { return x; }
-    public int getY() { return y; }
-
-    public int getSpawnX(){ return spawnX; }
-    public int getSpawnY(){ return spawnY; }
-
-    public int  getLives(){ return lives; }
-    public boolean isAlive(){ return alive; }
-    public boolean isInvincible() { return System.currentTimeMillis() < invincibleUntil; }
+    public int getY()  { return y; }
+    public int getSpawnX() { return spawnX; }
+    public int getSpawnY() { return spawnY; }
+    public int getLives() { return lives; }
+    public boolean isAlive() { return alive; }
+    public boolean isInvincible(){ return System.currentTimeMillis() < invincibleUntil; }
     public int getBombRange() { return bombRange; }
     public int getBombCapacity() { return bombCapacity; }
-    public int getActiveBombs() { return activeBombCount; }
-    public int getMoveDelay() { return moveDelay; }
+    public int getActiveBombs()  { return activeBombCount; }
+    public int getMoveDelay(){ return moveDelay; }
 
     public int getSpeedLevel() {
         int clamped = Math.max(MIN_MOVE_DELAY, Math.min(MAX_MOVE_DELAY, moveDelay));
