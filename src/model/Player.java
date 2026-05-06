@@ -46,7 +46,9 @@ public class Player {
         return alive && activeBombCount < bombCapacity;
     }
 
-    public void onBombPlaced()   { activeBombCount++; }
+    public void onBombPlaced()   { activeBombCount++; 
+        
+    }
     public void onBombExploded() { if (activeBombCount > 0) activeBombCount--; }
 
     public enum HitResult {
@@ -70,8 +72,8 @@ public class Player {
     }
 
     public void respawn() {
-        this.x               = spawnX;
-        this.y               = spawnY;
+        this.x  = spawnX;
+        this.y  = spawnY;
         this.lastMoveTime    = 0;
         this.invincibleUntil = System.currentTimeMillis() + SPAWN_INVINCIBLE_MS;
     }
@@ -92,7 +94,7 @@ public class Player {
     public void applyItem(ItemType type) {
         switch (type) {
             case BONUS_SPEED -> moveDelay = Math.max(MIN_MOVE_DELAY, moveDelay - 30);
-            case MALUS_SLOW -> moveDelay    = Math.min(MAX_MOVE_DELAY, moveDelay + 40);
+            case MALUS_SLOW -> moveDelay = Math.min(MAX_MOVE_DELAY, moveDelay + 40);
             case BONUS_BOMB_COUNT -> bombCapacity = Math.min(bombCapacity + 1, 8);
             case BONUS_RANGE -> bombRange    = Math.min(bombRange    + 1, 9);
             case NONE -> {}

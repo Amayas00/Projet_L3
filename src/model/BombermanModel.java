@@ -16,8 +16,15 @@ public class BombermanModel {
     private final List<Player> players = new ArrayList<>();
     private final List<Bomb> activeBombs = new ArrayList<>();
 
-
-    private final List<long[]> activeExplosions = new ArrayList<>();
+    /*
+     * Cases actuellement enflammées : clé = position encodée (x * height + y),
+     * valeur = timestamp d'expiration (en ms) le plus tardif.
+     * Une Map permet de fusionner proprement les flammes qui se chevauchent
+     * (deux explosions sur la même case prennent l'expiry maximum) au lieu
+     * d'avoir des entrées dupliquees qui causaient un nettoyage premature
+     * du grid.
+     */
+    private final Map<Long, Long> activeExplosions = new HashMap<>();
 
     private final int explosionDurationMs;
     private final double itemDropChance;
@@ -115,19 +122,43 @@ public class BombermanModel {
 
         expireExplosions();
         triggerReadyBombs();
+        // Securite : un joueur peut etre reste immobile sur une case devenue
+        // enflammee a ce tick - ou, a cause d'invincibilite, n'avoir pas ete
+        // touche lors de l'apparition de la flamme. On reverifie ici pour que
+        // la flamme blesse pendant toute sa duree de vie.
+        damagePlayersOnFlames();
         checkWinCondition();
+    }
+
+    /**
+     * Encode une position 2D en cle unique pour la Map des explosions actives.
+     */
+    private long key(int x, int y) {
+        return (long) x * height + y;
+    }
+
+    /**
+     * Indique si une case est actuellement enflammee (flamme encore visible).
+     * Utilise en interne pour les collisions joueur / flamme.
+     */
+    private boolean isFlameActive(int x, int y) {
+        Long expiry = activeExplosions.get(key(x, y));
+        return expiry != null && System.currentTimeMillis() < expiry;
     }
 
     private void expireExplosions() {
         long now = System.currentTimeMillis();
-        Iterator<long[]> it = activeExplosions.iterator();
+        Iterator<Map.Entry<Long, Long>> it = activeExplosions.entrySet().iterator();
         while (it.hasNext()) {
-            long[] entry = it.next();
-            int  ex = (int) entry[0];
-            int  ey = (int) entry[1];
-            long expiry = entry[2];
-            if (now >= expiry) {
+            Map.Entry<Long, Long> entry = it.next();
+            if (now >= entry.getValue()) {
+                long k = entry.getKey();
+                int ex = (int) (k / height);
+                int ey = (int) (k % height);
 
+                // La flamme est terminee : on libere la case.
+                // On ne touche pas aux cases devenues WALL ou DESTRUCTIBLE_BLOCK
+                // (theoriquement impossible mais on reste defensif).
                 if (grid[ex][ey] == TileType.EXPLOSION) {
                     grid[ex][ey] = (items[ex][ey] != ItemType.NONE)
                             ? TileType.ITEM
@@ -144,8 +175,29 @@ public class BombermanModel {
             if (b.isReadyToExplode()) toExplode.add(b);
         }
         for (Bomb b : toExplode) {
+            // On retire la bombe de la liste AVANT de declencher l'explosion,
+            // pour qu'elle ne soit plus consideree comme bloquante et pour
+            // eviter qu'elle ne se redeclenche en chaine sur elle-meme.
             activeBombs.remove(b);
             triggerExplosion(b);
+        }
+    }
+
+    /**
+     * Inflige des degats a tout joueur situe sur une case actuellement
+     * enflammee. Appelee a chaque tick : ainsi un joueur qui ENTRE dans une
+     * flamme deja active meurt aussi (et pas seulement au moment ou la
+     * flamme apparait). Respecte l'invincibilite geree par Player.hit().
+     */
+    private void damagePlayersOnFlames() {
+        for (Player p : players) {
+            if (!p.isAlive()) continue;
+            if (!isFlameActive(p.getX(), p.getY())) continue;
+
+            Player.HitResult result = p.hit();
+            if (result == Player.HitResult.HIT_ALIVE) {
+                p.respawn();
+            }
         }
     }
 
@@ -163,7 +215,9 @@ public class BombermanModel {
                 int px = p.getX(), py = p.getY();
                 boolean alreadyThere = activeBombs.stream()
                         .anyMatch(b -> b.getX() == px && b.getY() == py);
-                if (!alreadyThere) {
+                // On evite aussi de poser une bombe sur une case enflammee
+                // (cas tres rare mais coherent avec la logique de jeu).
+                if (!alreadyThere && grid[px][py] != TileType.EXPLOSION) {
                     activeBombs.add(new Bomb(px, py, p.getBombRange(), p));
                     p.onBombPlaced();
                 }
@@ -201,10 +255,20 @@ public class BombermanModel {
 
     private void applyExplosionCell(int x, int y, long expiry) {
         grid[x][y] = TileType.EXPLOSION;
-        activeExplosions.add(new long[]{x, y, expiry});
 
+        // Si la case etait deja enflammee par une autre explosion, on garde
+        // l'expiry le plus tardif - sinon la premiere flamme a expirer
+        // libererait la case alors que l'autre est encore active.
+        long k = key(x, y);
+        Long current = activeExplosions.get(k);
+        if (current == null || expiry > current) {
+            activeExplosions.put(k, expiry);
+        }
+
+        // Joueur deja present au moment ou la flamme apparait : touche tout
+        // de suite (le check par tick gerera ceux qui entrent ensuite).
         for (Player p : players) {
-            if (p.getX() == x && p.getY() == y) {
+            if (p.isAlive() && p.getX() == x && p.getY() == y) {
                 Player.HitResult result = p.hit();
                 if (result == Player.HitResult.HIT_ALIVE) {
                     p.respawn();
@@ -212,6 +276,7 @@ public class BombermanModel {
             }
         }
 
+        // Reaction en chaine : toute autre bombe touchee explose immediatement.
         activeBombs.stream()
                 .filter(b -> b.getX() == x && b.getY() == y)
                 .findFirst()
@@ -244,20 +309,42 @@ public class BombermanModel {
             if (!inBounds(newX, newY)) continue;
 
             TileType target = grid[newX][newY];
+            // EXPLOSION reste "marchable" : un joueur peut decider d'entrer
+            // dans une flamme (et y mourir), il n'est pas bloque par elle.
+            // Une fois la flamme expiree, la case redevient EMPTY ou ITEM
+            // dans expireExplosions() -> traversable normalement.
             boolean walkable = target == TileType.EMPTY
                     || target == TileType.EXPLOSION
                     || target == TileType.ITEM;
 
+            // Une bombe NON encore explosee bloque le passage. Des qu'elle
+            // explose, elle est retiree de activeBombs (cf. triggerReadyBombs)
+            // donc la case redevient franchissable au tick suivant.
             boolean bombThere = activeBombs.stream()
                     .anyMatch(b -> b.getX() == newX && b.getY() == newY);
 
             if (walkable && !bombThere) {
                 p.updatePosition(newX, newY);
 
+                // Ramassage d'item eventuel.
                 if (target == TileType.ITEM || items[newX][newY] != ItemType.NONE) {
                     p.applyItem(items[newX][newY]);
                     items[newX][newY] = ItemType.NONE;
-                    grid[newX][newY]  = TileType.EMPTY;
+                    // On ne remet a EMPTY que si la case n'est pas en feu :
+                    // sinon on effacerait la flamme prematurement.
+                    if (grid[newX][newY] != TileType.EXPLOSION) {
+                        grid[newX][newY] = TileType.EMPTY;
+                    }
+                }
+
+                // Si le joueur vient d'entrer dans une flamme active,
+                // il prend un coup tout de suite. C'est LE point cle qui
+                // corrige le bug "entrer dans une flamme ne tue pas".
+                if (isFlameActive(newX, newY)) {
+                    Player.HitResult result = p.hit();
+                    if (result == Player.HitResult.HIT_ALIVE) {
+                        p.respawn();
+                    }
                 }
             }
         }
